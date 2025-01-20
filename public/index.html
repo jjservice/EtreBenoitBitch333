@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOLLIPOP CLUB</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://js.stripe.com/v3/"></script> <!-- Stripe JS -->
+
+  <style>
+    /* Modal for image slider */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      z-index: 9999;
+    }
+
+    .modal-content {
+      position: relative;
+      margin: auto;
+      padding: 20px;
+      max-width: 100%;
+      max-height: auto;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 10px;
+      padding: 20px;
+      border: 2px solid lightskyblue;
+      border-radius: 8px;
+      box-shadow: 0px 2px 10px white;
+    }
+    body.lightStore .modal-content img {
+      border: 2px solid gold;
+      border-radius: 8px;
+      box-shadow: 0px 2px 10px yellowgreen;
+    }
+
+    /* Next and Previous buttons */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 16px;
+      margin-top: -22px;
+      color: #f1f1f1;
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.3s;
+      border-radius: 10px;
+     
+     
+    }
+
+    .prev {
+      left: 0;
+      border-right: 2px solid lightskyblue;
+   
+    }
+
+    .next {
+      right: 0;
+      border-left: 2px solid lightskyblue;
+      
+
+    }
+
+    .prev:hover, .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+
+      /* Modal styles */
+      .modal-ad{
+      margin: 0% auto;
+      width: 95%;
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: black;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+    }
+    .modal-ad p{
+      font-size: 25px;
+      color: white;
+      text-shadow: 2px 2px 4px gold;
+      padding: 10px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      list-style-type: none;
+      z-index: 9999;
+    }
+    .modal-ad button{
+      border: none;
+      padding: 5px 10px;
+      border-radius: 10px;
+      background-color: transparent;
+      cursor: pointer;
+      color: red;
+      font-size: 25px;
+      box-shadow: 0px 2px 6px white;
+      z-index: 9999;
+
+    }
+    .modal-ad button:hover{
+      transform: scale(1.10);
+      transition: 0.5s;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.781);
+      z-index: 9999;
+    }
+    .Open-ad-image{
+      margin: 0% auto;
+      z-index: 9999;
+    }
+    .Open-ad-image img{
+      margin: 0% auto;
+      
+      box-shadow: 0px 2px 10px white;
+      max-width: 100%;
+      height: auto;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      z-index: 9999;
+
+    }
+  
+
+    .container4 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+
+  .search-bar4 {
+    flex-grow: 1;  /* This allows the search bar to take up the available space */
+    padding: 10px;
+    font-size: 16px;
+    margin-right: 10px;  /* Adds space between the search bar and buttons */
+    display: none;  /* Hide the search bar initially */
+  }
+
+  #promoCode{
+    margin: 0% auto;
+    padding: 5px;
+    font-size: 12px;
+    margin-top: 10;
+    margin-bottom: 5px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    width: 100px;
+    border: 2px solid gold;
+   
+    
+  }
+
+    @media (min-width: 768px){
+    .modal-content{
+      padding-top: 60px;
+    }
+    .modal-content img {
+      width: 400px;
+      height: auto;
+    }
+    .modal-ad {
+      width: 500px;
+      height: auto;
+      z-index: 9999;
+    }
+    .Open-ad-image img{
+      margin: 0% auto;
+      width: 500px;
+      height: auto;
+      z-index: 9999;
+    }
+    }
+
+
+  </style>
+  
+</head>
+<header>
+  <h1 onclick="toggleClassPlayer()">Être Benoît</h1>
+</header>
+<body>
+  
+  <!-- Navigation Section -->
+    <details>
+      <summary style="z-index: 333;"><i class="fas fa-shopping-bag"></i><span id="cart-item-count">0</span></summary>
+      <div class="cart-container">
+      <div id="cart-items"></div>
+      <p id="cart-total" style="color: white;">Total: $0.00</p>
+      <input type="text" id="promoCode" placeholder="Promo Code" style="display:none;">
+      
+      <select id="currency-selector">
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="DOP">DOP</option>
+      </select>
+      
+    <button id="checkout-btn" style="display:none;">Proceed to Checkout</button>
+  </div>
+  </details>
+
+    <!-- The button to open the sidebar -->
+    <button class="open-btn-sidebar" onclick="openNav()">
+      <i class="fas fa-bars"></i>
+  </button>
+
+
+    <!-- The sidebar menu -->
+    <div id="mySidebar" class="sidebar">
+      <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+      <a href="./men.html">Men</a>
+      <a href="./women.html">Women</a>
+      <a href="./kids.html">Kids</a>
+      <a href="./Deals.html">Special Deals</a>
+  </div>
+
+
+
+
+  
+   <!-- Custom Notification Box -->
+   <div id="custom-notification" class="notification">
+    <span id="notification-message"></span>
+  </div>
+  <br>
+  <br>
+  <br>
+
+
+     
+
+      <div class="container">
+        <label>Être Benoît</label> 
+        <div class="Box">
+            <div class="img">
+  
+                <div class="imgBox" style="--i:1;">
+                    <a href="#"><img src="NikeAirForce1'07-mainPic.png"></a>
+                </div>
+  
+                <div class="imgBox" style="--i:2;">
+                    <a href="#"><img src="./products/V-Legend-Skeleton-Watch-$1317-pic1.avif"></a>
+                </div>
+  
+                <div class="imgBox" style="--i:3;">
+                    <a href="#"><img src="Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg"></a>
+                </div>
+  
+                <div class="imgBox" style="--i:4;">
+                  <a href="#"><img src="./products//Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic1.avif"></a>
+              </div>
+  
+              <div class="imgBox" style="--i:5;">
+                  <a href="#"><img src="./products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif"></a>
+              </div>
+  
+              
+              <div class="imgBox" style="--i:6;">
+                <a href="#"><img src="./Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-1.webp"></a>
+             </div>            
+  
+              <div class="imgBox" style="--i:7;">
+                <a href="#"><img src="./A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-1.jpg"></a>
+             </div>
+  
+            <div class="imgBox" style="--i:8;">
+                <a href="#"><img src="./products/louis-vuitton-nano-speedy-dating--M13226-pic2.avif"></a>
+            </div>  
+  
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="Images-Body">
+      <img id="imageDisplay" src="Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg" alt="">
+    </div>
+
+    <script>
+      // List of image URLs
+const images = [
+  './Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg',
+  './A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-1.jpg',
+  './AirforceWhitePi1.png', 
+  './louis-vuitton-nano-speedy-dating-M13226- 2460-pic1Main.jpg',
+  './Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-1.webp',
+  './Versace-Safety-Pin-Ribbed-Knit-Mini-Dress- 1950-Main.jpg',
+  './products/V-Legend-Skeleton-Watch-$1317-pic1.avif',
+  './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif'
+];
+
+let currentIndex = 0;
+
+// Function to change image
+function changeImage() {
+  // Select the image element
+  const imageElement = document.getElementById('imageDisplay');
+  
+  // Set the new image source
+  imageElement.src = images[currentIndex];
+  
+  // Update index for next image
+  currentIndex = (currentIndex + 1) % images.length; // Loops back to the first image after the last one
+}
+
+// Change image every 5 seconds (5000 milliseconds)
+setInterval(changeImage, 3000);
+
+    </script>
+  
+     <!---------- Blink Section-------------->
+    <div class="image-container">
+      <img src="./products/V-Legend-Skeleton-Watch-$1317-pic1.avif" class="blink-image" alt="Image 1">
+      <img src="Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg" class="blink-image" alt="Image 2">
+      <img src="./products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic1.avif" class="blink-image" alt="Image 3">
+      <img src="./products/louis-vuitton-nano-speedy-dating--M13226-pic2.avif" class="blink-image" alt="Image 4">
+      <img src="./A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-1.jpg" class="blink-image" alt="Image 5">
+      <img src="./products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic2.avif" class="blink-image" alt="Image 6">
+      <img src="AirforceWhitePi1.png" class="blink-image" alt="Image 7">
+      <img src="./Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-1.webp" class="blink-image" alt="Image 8">
+  </div>
+
+
+
+  <!-- Product List -->
+  <ul class="product-List" style="margin-bottom: 1%;">
+
+    <div class="product">
+
+      <video autoplay loop muted playsinline>
+
+      <source src="./products/Patent leather and technical fabric Prada Americas Cup sneakers-VIDEO.webm"  type="video/mp4"
+      onclick="openModal(
+        [
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic2.avif',
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic3.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic4.avif'
+        ])">
+        
+      </video>
+
+      <img style="display: none;" src="./products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif" alt="Casio G-SHOCK-MTGB3000DN1A" 
+      onclick="openModal(
+        [
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic2.avif',
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic3.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic4.avif'
+        ])">
+
+      <h3>Prada Americas Cup sneakers</h3>
+      <p class="size-tag">Patent leather and technical fabric</p>
+      <p id="Price-tag">$899.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="8">
+      <p id="in-Stock" style="text-shadow: none;">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="8" data-price="899.99" data-name="Patent leather and technical fabric- Prada Americas Cup sneakers">ADD TO CART</button>
+    </div>
+
+    <div class="product">
+
+      <img src="Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+          './Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC1.webp', 
+          './Rabanne-1-Million-Eau-de-Toilette-PIC2.webp',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC3.webp',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC4.webp',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC5.webp'
+        ])" style="background-color: white; padding: 5px; border: 2px solid rgba(0, 0, 0, 0.884);">
+
+      <h3>Rabanne - 1 Million Eau de Toilette</h3>
+      <p class="size-tag">Men Fragance!</p>
+      <p id="Price-tag">$119.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="1">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="1" data-price="119.99" data-name="Rabanne - 1 Million Eau de Toilette">ADD TO CART</button>
+    </div>
+
+    <div class="product">
+
+      <img src="louis-vuitton-nano-speedy-dating-M13226- 2460-pic1Main.jpg" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+          './louis-vuitton-nano-speedy-dating-M13226- 2460-pic1Main.jpg',
+          './products/louis-vuitton-nano-speedy-dating--M13226-pic2.avif', 
+          './products/louis-vuitton-nano-speedy-dating--M13226-pic3.avif',
+          './products/louis-vuitton-nano-speedy-dating--M13226-pic4.avif'
+        ])" style="background-color: white; padding: 5px; border: 2px solid rgba(0, 0, 0, 0.884);">
+
+      <h3>Louis Vuitton Nano - Speedy Dating</h3>
+      <p class="size-tag">M13226</p>
+      <p id="Price-tag">$2,499.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="2">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="2" data-price="2499.99" data-name="Louis Vuitton Nano - Speedy Dating">ADD TO CART</button>
+    </div>
+
+
+    <div class="product">
+
+      <img src="Versace-Safety-Pin-Ribbed-Knit-Mini-Dress- 1950-Main.jpg" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic1.avif', 
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic2.avif',
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic3.avif', 
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic4.avif'
+          
+        ])">
+
+      <h3>Versace Safety - Pin Ribbed Knit</h3>
+      <p class="size-tag">Mini-Dress</p>
+      <p id="Price-tag">$1999.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="3">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="3" data-price="1999.99" data-name="Versace Safety - Pin Ribbed Knit - Mini-Dress">ADD TO CART</button>
+    </div>
+    
+
+    <div class="product">
+
+      <video style="display: none;"   src="./products/NikeAirForceWhite-Video.mp4" autoplay preload="auto" loop
+      onclick="openModal(
+        [
+        'AirforceWhitePi1.png', 
+        'AirforceWhitePi3.png', 
+        'AirforceWhitePi4.png'
+        ])">
+        
+      </video>
+
+
+
+      <img src="NikeAirForce1'07-mainPic.png" alt="Nike Air Force 1" onclick="openModal(
+        [
+        'AirforceWhitePi1.png', 
+        'AirforceWhitePi3.png', 
+        'AirforceWhitePi4.png'
+        ])">
+      <h3>Nike Air Force 1 '07 - Men's Shoes - Sneakers</h3>
+      <p class="size-tag">Size: M-6 / W-7.5</p>
+      <p id="Price-tag">$99.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="4">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="4" data-price="99.99" data-name="Nike Air Force 1 '07 - SMALL">ADD TO CART</button>
+    </div>
+    
+    <div class="product">
+
+      <img src="V-Legend-Skeleton-Watch- 1317-main.jpg" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+        './products/V-Legend-Skeleton-Watch-$1317-pic1.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic12.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic3.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic4.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic5.avif' 
+         
+        ])">
+
+      <h3>Versace Legend Skeleton Watch</h3>
+      <p class="size-tag">Exclusive Offer!</p>
+      <p id="Price-tag">$1,199.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="5">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="5" data-price="1199.99" data-name="Versace Legend Skeleton Watch">ADD TO CART</button>
+    </div>
+    
+    <div class="product">
+
+      <img src="Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-1.webp" alt="Nike Air Force 1" 
+      onclick="openModal(
+        ['Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-1.webp', 
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-2.webp', 
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-3.webp',
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-4.webp',
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-5.webp', 
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-6.webp'])">
+
+      <h3>Versace Chain Reaction-Sneaker</h3>
+      <p class="size-tag">Multicolor BNWB-Size: 45</p>
+      <p id="Price-tag">$1,199.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="6">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="6" data-price="1199.99" data-name="Versace Chain Reaction - Sneaker">ADD TO CART</button>
+    </div>
+
+
+    <div class="product">
+
+      <img src="A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-1.jpg" alt="Casio G-SHOCK-MTGB3000DN1A" 
+      onclick="openModal(
+        [
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-1.jpg', 
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-2.avif',
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-3.avif', 
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-4.avif',
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-5.avif',
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-6.avif'
+       
+        ])">
+
+      <h3>A Cosmos Watch with Nebula Hues</h3>
+      <p class="size-tag">Casio G-SHOCK MTGB3000DN1A</p>
+      <p id="Price-tag">$1,250.00</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="7">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="7" data-price="1249.99" data-name="A Cosmos Watch with Nebula Hues - Casio G-SHOCK MTGB3000DN1A">ADD TO CART</button>
+    </div>
+    
+    <!-- Add more products as needed -->
+  </ul>
+
+  
+     
+  <div class="ContainerDesign">
+    <h6 class="Design-Two-Title">Être Benoît</h6>
+  </div>
+  <br>
+ 
+
+  <div class="Marketing-One">
+    <h2 class="Marketing-One-Title">Exclusive Offers</h2>
+    
+    <div class="image-One">
+
+      <a href="men.html">
+        <video autoplay loop muted playsinline>
+          <source src="./products/Patent leather and technical fabric Prada Americas Cup sneakers-VIDEO.webm" type="video/mp4">
+        </video>
+      </a>
+
+
+       <a href="women.html">
+        <video  autoplay loop muted playsinline>
+          <source src="./products/Prada-FashinShow-Video.mp4" type="video/mp4">
+        </video>
+      
+        <video autoplay loop muted playsinline>
+          <source src="./products/ZaraModel-Video.mp4" type="video/mp4">
+        </video>
+       </a>
+
+
+      <a href="women.html">
+        <video autoplay loop muted playsinline>
+          <source src="./products/ZaraModel-Video.mp4"  type="video/mp4">
+        </video>
+
+        <video autoplay loop muted playsinline>
+          <source src="./products/Versace-Coat-Video.mp4" type="video/mp4">
+        </video>
+      </a>
+      
+
+      <a href="men.html">
+       <video autoplay loop muted playsinline>
+        <source src="./products/NikeAirForceWhite-Video.mp4" type="video/mp4">
+       </video>
+      </a>
+
+
+    </div>
+
+  </div>
+  <br>
+  <br>
+
+  
+   <!-- Product List -->
+   <ul class="product-List" style="margin-bottom: 50px;">
+
+    <div class="product">
+
+      <video autoplay loop muted playsinline>
+
+      <source src="./products/Patent leather and technical fabric Prada Americas Cup sneakers-VIDEO.webm"  type="video/mp4"
+      onclick="openModal(
+        [
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic2.avif',
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic3.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic4.avif'
+        ])">
+        
+      </video>
+
+      <img style="display: none;" src="./products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif" alt="Casio G-SHOCK-MTGB3000DN1A" 
+      onclick="openModal(
+        [
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic1.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic2.avif',
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic3.avif', 
+         './products/Patent-leather-and-technical-fabric-Prada-Americas-Cup-sneakers-$895-pic4.avif'
+        ])">
+
+      <h3>Prada Americas Cup sneakers</h3>
+      <p class="size-tag">Patent leather and technical fabric</p>
+      <p id="Price-tag">$899.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="8">
+      <p id="in-Stock" style="text-shadow: none;">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="8" data-price="899.99" data-name="Patent leather and technical fabric- Prada Americas Cup sneakers">ADD TO CART</button>
+    </div>
+
+    <div class="product">
+
+      <img src="Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+          './Rabanne-1-Million-Eau-de-Toilette-PIC1-main.jpg',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC1.webp', 
+          './Rabanne-1-Million-Eau-de-Toilette-PIC2.webp',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC3.webp',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC4.webp',
+          './Rabanne-1-Million-Eau-de-Toilette-PIC5.webp'
+        ])" style="background-color: white; padding: 5px; border: 2px solid rgba(0, 0, 0, 0.884);">
+
+      <h3>Rabanne - 1 Million Eau de Toilette</h3>
+      <p class="size-tag">Men Fragance!</p>
+      <p id="Price-tag">$119.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="1">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="1" data-price="119.99" data-name="Rabanne - 1 Million Eau de Toilette">ADD TO CART</button>
+    </div>
+
+    <div class="product">
+
+      <img src="louis-vuitton-nano-speedy-dating-M13226- 2460-pic1Main.jpg" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+          './louis-vuitton-nano-speedy-dating-M13226- 2460-pic1Main.jpg',
+          './products/louis-vuitton-nano-speedy-dating--M13226-pic2.avif', 
+          './products/louis-vuitton-nano-speedy-dating--M13226-pic3.avif',
+          './products/louis-vuitton-nano-speedy-dating--M13226-pic4.avif'
+        ])" style="background-color: white; padding: 5px; border: 2px solid rgba(0, 0, 0, 0.884);">
+
+      <h3>Louis Vuitton Nano - Speedy Dating</h3>
+      <p class="size-tag">M13226</p>
+      <p id="Price-tag">$2,499.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="2">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="2" data-price="2499.99" data-name="Louis Vuitton Nano - Speedy Dating">ADD TO CART</button>
+    </div>
+
+
+    <div class="product">
+
+      <img src="Versace-Safety-Pin-Ribbed-Knit-Mini-Dress- 1950-Main.jpg" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic1.avif', 
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic2.avif',
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic3.avif', 
+          './products/Versace-Safety-Pin-Ribbed-Knit-Mini-Dress-$1950-pic4.avif'
+          
+        ])">
+
+      <h3>Versace Safety - Pin Ribbed Knit</h3>
+      <p class="size-tag">Mini-Dress</p>
+      <p id="Price-tag">$1999.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="3">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="3" data-price="1999.99" data-name="Versace Safety - Pin Ribbed Knit - Mini-Dress">ADD TO CART</button>
+    </div>
+
+    <!-- Add more products as needed -->
+  </ul>
+
+
+  <!-- Modal Structure -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()" style="color: white; font-size: 25px; cursor: pointer;">&times;</span>
+      <button class="prev" onclick="changeImage(-1)"  style="background-color: rgba(0, 0, 0, 0.877); border: none;">&#10094;</button>
+      <img id="modalImage" src="" alt="Product Image">
+      <button class="next" onclick="changeImage(1)" style="background-color: rgba(0, 0, 0, 0.877); border: none;">&#10095;</button>
+    </div>
+  </div>
+
+  <script>
+    // Function to update the button state based on stock levels
+    function updateButtonState() {
+      // Loop through each product and check the stock vs. quantity selected
+      document.querySelectorAll('.product').forEach(function(product) {
+        // Get the product's stock and the quantity input
+        const stock = parseInt(product.querySelector('#stock2').innerText) || parseInt(product.querySelector('#stock1').innerText);
+        const quantityInput = product.querySelector('.quantity-input');
+        const buyNowButton = product.querySelector('.buy-now');
+        
+        // Check if the quantity exceeds stock
+        if (parseInt(quantityInput.value) > stock) {
+          // Update the button to "Out of Stock"
+          buyNowButton.innerText = "OUT OF STOCK";
+          buyNowButton.disabled = true;  // Optionally disable the button
+          buyNowButton.style.backgroundColor = "red";
+        } else {
+          // Restore the button to "Add to Cart"
+          buyNowButton.innerText = "ADD TO CART";
+          buyNowButton.disabled = false;
+          buyNowButton.style.backgroundColor = "green";
+
+  
+        }
+      });
+    }
+    
+  
+    // Event listener for quantity input changes
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+      input.addEventListener('input', updateButtonState);
+    });
+  
+    // Initial update on page load
+    window.onload = updateButtonState;
+  </script>
+
+  <!-- Fixed footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-name">
+        <a href="#" style="text-decoration: none;">
+          <h3 id="Footer-Title" class="button4">Être Benoît</h3>
+        </a>
+        </div>
+      <div class="footer-nav">
+        
+             <!-- Dropdown for language selection -->
+       <select id="language-select">
+    <option value="en-US">English (US)</option>
+     <option value="es-ES">Spanish</option>
+     <option value="fr-FR">French</option>
+     <option value="de-DE">German</option>
+     <option value="it-IT">Italian</option>
+       </select>
+
+       <button id="voice-search-btn" aria-label="Voice Search">🎙️</button>
+        <input class="search-bar4" type="text" id="search-bar" placeholder=".;.Search.;." oninput="searchProducts()" style="display: none;">
+        <button class="button4" id="Icon-Search-Footer" onclick="toggleSearchBar()"><i class="fas fa-search search-icon"></i></button>
+      
+        <a href="https://jjservice.github.io/L-Club-Store/About.html" class="button4"><ion-icon name="people"></ion-icon></a>
+        <a href="https://jjservice.github.io/L-Club-Store/ContactForm.html" class="button4"><ion-icon name="mail"></ion-icon></a>
+        <a href="https://jjservice.github.io/L-Club-Store/Faq.html" class="button4"><ion-icon name="help"></ion-icon></a>
+        <a href="tel:+1234567890" style="display: none;"><i class="fas fa-phone"></i>Call Us</a>
+      </div>
+
+     
+  
+
+  </footer>
+
+
+  <!-- Modal HTML -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div class="modal-ad" id="modal-ad">
+    <div class="Open-ad-image">
+    <a href="#"><img src="./ContactImgPic.gif" alt=""></a>
+  </div>
+  <a href="https://jjservice.github.io/L-Club-Store/ContactForm.html" style="text-decoration: none;">
+    <p>Contact Us!</p>
+  </a>
+    <button onclick="closeModalad()"><i class="fa fa-times"></i></button>
+  </div>
+
+  <script>
+    // Function to open the modal
+    function openModalad() {
+      document.getElementById('modal-ad').style.display = 'block';
+      document.getElementById('modalOverlay').style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeModalad() {
+      document.getElementById('modal-ad').style.display = 'none';
+      document.getElementById('modalOverlay').style.display = 'none';
+    }
+
+    // Wait for window load, then set the timeout for 5 seconds
+    window.onload = function() {
+      setTimeout(openModalad, 3000); // 5000ms = 5 seconds
+    }
+  </script>
+
+
+  <script src="script.js"></script>
+  <script src="Search.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>
+
+

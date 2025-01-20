@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LOLLIPOP CLUB</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://js.stripe.com/v3/"></script> <!-- Stripe JS -->
+
+  <style>
+    /* Modal for image slider */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      z-index: 9999;
+    }
+
+    .modal-content {
+      position: relative;
+      margin: auto;
+      padding: 20px;
+      max-width: 100%;
+      max-height: auto;
+    }
+
+    .modal-content img {
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 10px;
+      padding: 20px;
+      border: 2px solid lightskyblue;
+      border-radius: 8px;
+      box-shadow: 0px 2px 10px white;
+    }
+    body.lightStore .modal-content img {
+      border: 2px solid gold;
+      border-radius: 8px;
+      box-shadow: 0px 2px 10px yellowgreen;
+    }
+
+    /* Next and Previous buttons */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 16px;
+      margin-top: -22px;
+      color: #f1f1f1;
+      font-weight: bold;
+      font-size: 18px;
+      transition: 0.3s;
+      border-radius: 10px;
+     
+     
+    }
+
+    .prev {
+      left: 0;
+      border-right: 2px solid lightskyblue;
+   
+    }
+
+    .next {
+      right: 0;
+      border-left: 2px solid lightskyblue;
+      
+
+    }
+
+    .prev:hover, .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+
+      /* Modal styles */
+      .modal-ad{
+      margin: 0% auto;
+      width: 95%;
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: black;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+    }
+    .modal-ad p{
+      font-size: 25px;
+      color: white;
+      text-shadow: 2px 2px 4px gold;
+      padding: 10px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      list-style-type: none;
+      z-index: 9999;
+    }
+    .modal-ad button{
+      border: none;
+      padding: 5px 10px;
+      border-radius: 10px;
+      background-color: transparent;
+      cursor: pointer;
+      color: red;
+      font-size: 25px;
+      box-shadow: 0px 2px 6px white;
+      z-index: 9999;
+
+    }
+    .modal-ad button:hover{
+      transform: scale(1.10);
+      transition: 0.5s;
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.781);
+      z-index: 9999;
+    }
+    .Open-ad-image{
+      margin: 0% auto;
+      z-index: 9999;
+    }
+    .Open-ad-image img{
+      margin: 0% auto;
+      
+      box-shadow: 0px 2px 10px white;
+      max-width: 100%;
+      height: auto;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      z-index: 9999;
+
+    }
+  
+
+    .container4 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+
+  .search-bar4 {
+    flex-grow: 1;  /* This allows the search bar to take up the available space */
+    padding: 10px;
+    font-size: 16px;
+    margin-right: 10px;  /* Adds space between the search bar and buttons */
+    display: none;  /* Hide the search bar initially */
+  }
+
+  .Women-Design{
+    margin: 0% auto;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: 15px;
+    border: none;
+  }
+  .Women-Design video{
+    margin: 0% auto;
+    width: 100%;
+    height: auto;
+    margin-bottom: -10px;
+    box-shadow: 0px 2px 15px whitesmoke;
+    
+  }
+
+    @media (min-width: 768px){
+    .modal-content{
+      padding-top: 60px;
+    }
+    .modal-content img {
+      width: 400px;
+      height: auto;
+    }
+    .modal-ad {
+      width: 500px;
+      height: auto;
+      z-index: 9999;
+    }
+    .Open-ad-image img{
+      margin: 0% auto;
+      width: 500px;
+      height: auto;
+      z-index: 9999;
+    }
+    }
+
+
+  </style>
+  
+</head>
+  
+
+<body>
+    <h1 onclick="toggleClassPlayer()" style="color: rgb(46, 42, 42);
+     margin-bottom: -10px; text-shadow: 0px 0px 2px black; font-size: 25px;">Men's Collection</h1>
+
+
+  <!-- Navigation Section -->
+    <details>
+      <summary style="z-index: 333;"><i class="fas fa-shopping-bag"></i><span id="cart-item-count">0</span></summary>
+      <div class="cart-container">
+      <div id="cart-items"></div>
+      <p id="cart-total" style="color: white;">Total: $0.00</p>
+    <button id="checkout-btn" style="display:none;">Proceed to Checkout</button>
+  </div>
+  </details>
+
+
+  
+   <!-- Custom Notification Box -->
+   <div id="custom-notification" class="notification">
+    <span id="notification-message"></span>
+  </div>
+
+  <div class="Women-Design">
+    <video autoplay loop muted playsinline>
+      <source src="./products/Prada-FashinShow-Video.mp4" type="video/mp4">
+    </video>
+  </div>
+
+
+  <!-- Product List -->
+  <ul class="product-List" style="margin-bottom: 50px;">
+
+    <div class="product">
+      <img src="NikeAirForce1'07-mainPic.png" alt="Nike Air Force 1" onclick="openModal(['AirforceWhitePi1.png', 'AirforceWhitePi3.png', 'AirforceWhitePi4.png'])">
+      <h3>Nike Air Force 1 '07 - Men's Shoes - Sneakers</h3>
+      <p class="size-tag">Size: M-6 / W-7.5</p>
+      <p id="Price-tag">$99.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="3">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="3" data-price="99.99" data-name="Nike Air Force 1 '07 - SMALL">ADD TO CART</button>
+    </div>
+    
+    <div class="product">
+
+      <img src="./products/V-Legend-Skeleton-Watch-$1317-pic1.avif" alt="Nike Air Force 1" 
+      onclick="openModal(
+        [
+        './products/V-Legend-Skeleton-Watch-$1317-pic1.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic12.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic3.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic4.avif',
+        './products/V-Legend-Skeleton-Watch-$1317-pic5.avif' 
+         
+        ])">
+
+      <h3>Versace Legend Skeleton Watch</h3>
+      <p class="size-tag">Exclusive Offer!</p>
+      <p id="Price-tag">$1,349.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="4">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="4" data-price="1199.99" data-name="Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB">ADD TO CART</button>
+    </div>
+    
+    <div class="product">
+
+      <img src="Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-1.webp" alt="Nike Air Force 1" 
+      onclick="openModal(
+        ['Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-1.webp', 
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-2.webp', 
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-3.webp',
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-4.webp',
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-5.webp', 
+        'Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB-6.webp'])">
+
+      <h3>Versace Chain Reaction-Sneaker</h3>
+      <p class="size-tag">Multicolor BNWB-Size: 45</p>
+      <p id="Price-tag">$1,199.99</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="5">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="5" data-price="1199.99" data-name="Versace-Chain-Reaction-Sneaker-Multicolor-Size45-BNWB">ADD TO CART</button>
+    </div>
+
+
+    <div class="product">
+
+      <img src="A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-1.jpg" alt="Casio G-SHOCK-MTGB3000DN1A" 
+      onclick="openModal(
+        [
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-1.jpg', 
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-2.avif',
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-3.avif', 
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-4.avif',
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-5.avif',
+         'A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A-6.avif'
+       
+        ])">
+
+      <h3>A Cosmos Watch with Nebula Hues</h3>
+      <p class="size-tag"> Casio G-SHOCK-MTGB3000DN1A</p>
+      <p id="Price-tag">$1,250.00</p>
+      <input type="number" class="quantity-input" value="1" min="1" max="1" data-product-id="6">
+      <p id="in-Stock">In Stock: <span id="stock2">1</span></p>
+      <button class="buy-now" data-product-id="6" data-price="1249.99" data-name="A-Cosmos-Watch-with-Nebula-Hues-Casio-G-SHOCK-MTGB3000DN1A">ADD TO CART</button>
+    </div>
+    
+    <!-- Add more products as needed -->
+  </ul>
+ 
+
+
+  <!-- Modal Structure -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()" style="color: white; font-size: 25px; cursor: pointer;">&times;</span>
+      <button class="prev" onclick="changeImage(-1)"  style="background-color: rgba(0, 0, 0, 0.877); border: none;">&#10094;</button>
+      <img id="modalImage" src="" alt="Product Image">
+      <button class="next" onclick="changeImage(1)" style="background-color: rgba(0, 0, 0, 0.877); border: none;">&#10095;</button>
+    </div>
+  </div>
+
+  <script>
+    // Function to update the button state based on stock levels
+    function updateButtonState() {
+      // Loop through each product and check the stock vs. quantity selected
+      document.querySelectorAll('.product').forEach(function(product) {
+        // Get the product's stock and the quantity input
+        const stock = parseInt(product.querySelector('#stock2').innerText) || parseInt(product.querySelector('#stock1').innerText);
+        const quantityInput = product.querySelector('.quantity-input');
+        const buyNowButton = product.querySelector('.buy-now');
+        
+        // Check if the quantity exceeds stock
+        if (parseInt(quantityInput.value) > stock) {
+          // Update the button to "Out of Stock"
+          buyNowButton.innerText = "OUT OF STOCK";
+          buyNowButton.disabled = true;  // Optionally disable the button
+          buyNowButton.style.backgroundColor = "red";
+        } else {
+          // Restore the button to "Add to Cart"
+          buyNowButton.innerText = "ADD TO CART";
+          buyNowButton.disabled = false;
+          buyNowButton.style.backgroundColor = "green";
+
+  
+        }
+      });
+    }
+    
+  
+    // Event listener for quantity input changes
+    document.querySelectorAll('.quantity-input').forEach(function(input) {
+      input.addEventListener('input', updateButtonState);
+    });
+  
+    // Initial update on page load
+    window.onload = updateButtonState;
+  </script>
+
+  <!-- Fixed footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-name">
+        <a href="#" style="text-decoration: none;">
+          <h3 id="Footer-Title" class="button4">Être Benoît</h3>
+        </a>
+        </div>
+      <div class="footer-nav">
+        
+        <a href="javascript:history.back()" class="button4" style="width: 50px;"><ion-icon name="arrow-back-outline"></ion-icon></a>
+             <!-- Dropdown for language selection -->
+       <select id="language-select">
+    <option value="en-US">English (US)</option>
+     <option value="es-ES">Spanish</option>
+     <option value="fr-FR">French</option>
+     <option value="de-DE">German</option>
+     <option value="it-IT">Italian</option>
+       </select>
+
+       
+       <button id="voice-search-btn" aria-label="Voice Search">🎙️</button>
+        <input class="search-bar4" type="text" id="search-bar" placeholder=".;.Search.;." oninput="searchProducts()" style="display: none;">
+        <button class="button4" id="Icon-Search-Footer" onclick="toggleSearchBar()"><i class="fas fa-search search-icon"></i></button>
+      
+       
+        
+       
+      </div>
+
+      
+  
+
+  </footer>
+
+
+  <!-- Modal HTML -->
+  <div class="modal-overlay" id="modalOverlay"></div>
+  <div class="modal-ad" id="modal-ad">
+    <div class="Open-ad-image">
+    <a href="#"><img src="./ContactImgPic.gif" alt=""></a>
+  </div>
+  <a href="https://jjservice.github.io/L-Club-Store/ContactForm.html" style="text-decoration: none;">
+    <p>Contact Us!</p>
+  </a>
+    <button onclick="closeModalad()"><i class="fa fa-times"></i></button>
+  </div>
+
+  <script>
+    // Function to open the modal
+    function openModalad() {
+      document.getElementById('modal-ad').style.display = 'block';
+      document.getElementById('modalOverlay').style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeModalad() {
+      document.getElementById('modal-ad').style.display = 'none';
+      document.getElementById('modalOverlay').style.display = 'none';
+    }
+
+    // Wait for window load, then set the timeout for 5 seconds
+    window.onload = function() {
+      setTimeout(openModalad, 3000); // 5000ms = 5 seconds
+    }
+  </script>
+
+
+  <script src="script.js"></script>
+  <script src="Search.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+</body>
+</html>
+
+
